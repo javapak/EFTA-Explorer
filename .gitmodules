@@ -1,0 +1,3 @@
+[submodule "webgpu-flow"]
+	path = webgpu-flow
+	url = https://github.com/javapak/webgpu-flow
