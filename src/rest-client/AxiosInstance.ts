@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-    baseURL: 'http://209.46.121.142', // Replace with your API base URL
+    baseURL: 'https://apaks.dev',
     headers: {
         'Content-Type': 'application/json',
     },
