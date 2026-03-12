@@ -41,7 +41,7 @@ const getOptimalCanvasSize = () => {
   };
 
 export default function ERFlow() {
-    const [, setSupportedSampleCount] = useState<string[] | undefined>(['1']);
+    const [, setSupportedSampleCount] = useState<string[] | undefined>(['2']);
     const [canvasSize, setCanvasSize] = useState(() => getOptimalCanvasSize());
     const [nodes, setNodes] = useState(erData.nodes as NodeProps[]);
     const [edges] = useState(erData.edges);
@@ -118,7 +118,7 @@ useEffect(() => {
 
 
 
-    const internalResolutionRef = useRef({width: 2560, height: 1440});
+    const internalResolutionRef = useRef({width: 1920, height: 1080});
     return (
         <>
             <DiagramCanvas 
