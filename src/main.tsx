@@ -8,6 +8,8 @@ await globalRenderer.initialize()
 await globalRenderer.initializeLabelRenderer();
 await globalRenderer.initializeFloatingEdgeRenderer();
 
+window.console.log = () => {};
+
 createRoot(document.getElementById('root')!).render(
 
     <DiagramProvider>

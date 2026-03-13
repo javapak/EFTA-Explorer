@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import erData from '../assets/efta_webgpu_flow.json';
 import type { MarkerType } from '../../webgpu-flow/src/renderers/FloatingEdgeRenderer';
 
-
+console.log = () => {}
 
 
 const isMobileDevice = () => {
@@ -44,64 +44,12 @@ export default function ERFlow() {
     const [canvasSize, setCanvasSize] = useState(() => getOptimalCanvasSize());
     const [nodes, setNodes] = useState(erData.nodes as NodeProps[]);
     const [edges] = useState(erData.edges);
-    const [wikiFetched, setWikiFetched] = useState(false);
 
     
 
 
     
 useEffect(() => {
-    const lookupNodes = nodes.filter(n => n.data.wikipediaLookup && n.data.wikipediaQuery);
-
-    const fetchAll = async () => {
-        const results = await Promise.all(
-            lookupNodes.map(async (node) => {
-                try {
-  
-            const res = await fetch(`https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(node.data.wikipediaQuery)}&prop=pageimages&pithumbsize=400&format=json&origin=*`);
-            const json = await res.json();
-            console.log(json);
-            let urlTemp = '';
-            const pageResult: Record<string, any> = Object.values<Record<string, any>>(json.query.pages)[0];
-            console.log('Portrait image result for entity: ', pageResult);
-            if (pageResult?.thumbnail?.source) urlTemp = pageResult.thumbnail.source;
-
-                    return { id: node.id, thumbnail: urlTemp ?? null };
-                } catch {
-                    return { id: node.id, thumbnail: '' };
-                }
-            })
-        );
-
-        const thumbnailMap = Object.fromEntries(
-            results.filter(r => r.thumbnail).map(r => [r.id, r.thumbnail])
-        );
-
-        setNodes(prev => prev.map(node => {
-
-            if (!thumbnailMap[node.id]) {
-              console.log('node claims no thumb: ', node);
-              return node
-            }
-            if (node.visual?.shape) node.visual.shape = 'none';
-            return {
-                ...node,
-                visual: {
-                    ...node.visual,
-                    visualContent: {
-                        type: 'image',
-                        content: thumbnailMap[node.id],
-                        size: { width: 100, height: 100 }
-                    }
-                }
-            };
-        }));
-
-        setWikiFetched(true);
-
-    };
-
-    fetchAll();
 
     const handleResize = () => {
       setCanvasSize(getOptimalCanvasSize());
@@ -133,8 +81,8 @@ useEffect(() => {
 
             />
           
-        {wikiFetched && <>{nodes.map((node) => <Node key={node.id} id={node.id} visual={node.visual} type={node.type} position={node.position} data={node.data} /> )} </>}
-        {wikiFetched && <>{edges.map((edge) => <Edge key={edge.id} id={edge.id} sourceNodeId={edge.sourceNodeId} data={edge.data} targetNodeId={edge.targetNodeId} userVertices={[]} style={{ targetMarker: edge.style.targetMarker as MarkerType, labelColor: "#ffffff", thickness: 3, color: [0,0,0,255] ,sourceMarker: edge.style.sourceMarker as MarkerType}} />)}</>}
+        {<>{nodes.map((node) => <Node key={node.id} id={node.id} visual={node.visual} type={node.type} position={node.position} data={node.data} /> )} </>}
+        {<>{edges.map((edge) => <Edge key={edge.id} id={edge.id} sourceNodeId={edge.sourceNodeId} data={edge.data} targetNodeId={edge.targetNodeId} userVertices={edge.userVertices} style={{ targetMarker: edge.style.targetMarker as MarkerType, labelColor: "#ffffff", thickness: 3, color: [0,0,0,255] ,sourceMarker: edge.style.sourceMarker as MarkerType}} />)}</>}
  
             
         </>
