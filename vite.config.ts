@@ -2,12 +2,13 @@ import { defineConfig } from 'vite'
 
   
 export default defineConfig({
-  build: {
-    target: 'esnext' // Allows native Top-Level Await without a plugin
+  resolve: {
+    alias: {
+      'elkjs/lib/elk.bundled.js': 'elkjs/lib/elk.bundled.js',
+    }
   },
   optimizeDeps: {
-    esbuildOptions: {
-      target: 'esnext'
-    }
+    include: ['elkjs/lib/elk.bundled.js'],
+    exclude: ['elkjs']
   }
 });
