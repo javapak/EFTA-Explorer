@@ -3,10 +3,17 @@ import { Node, type NodeProps } from '../../webgpu-flow/src/components/Node';
 import { Edge } from '../../webgpu-flow/src/components/Edge';
 import { type NodeType } from '../../webgpu-flow/src/components/NodePalette';
 import { useEffect, useRef, useState } from 'react';
-import erData from '../assets/efta_webgpu_flow.json';
 import type { MarkerType } from '../../webgpu-flow/src/renderers/FloatingEdgeRenderer';
+import { applyElkLayout } from '../utils/FlowLayoutHelpers';
 
+const raw = await import('../assets/efta_webgpu_flow.json');
 
+const { nodes, edges } = await applyElkLayout(raw.nodes, raw.edges, {
+    'elk.direction': 'RIGHT',
+    'elk.layered.spacing.nodeNodeBetweenLayers': '400',
+    'elk.spacing.nodeNode': '150',
+    
+});
 
 const isMobileDevice = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -41,15 +48,14 @@ const getOptimalCanvasSize = () => {
 export default function ERFlow() {
     const [, setSupportedSampleCount] = useState<string[] | undefined>(['2']);
     const [canvasSize, setCanvasSize] = useState(() => getOptimalCanvasSize());
-    const [nodes] = useState(erData.nodes as NodeProps[]);
-    const [edges] = useState(erData.edges);
-
-    
+    const [, setNodes] = useState<any>();
+    const [, setEdges ] = useState<any>();
 
 
     
 useEffect(() => {
-
+    setNodes(nodes);
+    setEdges(edges);
     const isMobile = isMobileDevice();
     if (isMobile) {
       // Set up mobile viewport
@@ -85,7 +91,7 @@ useEffect(() => {
 
     const internalResolutionRef = useRef({width: 1920, height: 1080});
     return (
-        <>
+        <div style={{overflow: 'hidden'}}>
             <DiagramCanvas 
                     width={canvasSize.width}
                     height={canvasSize.height}
@@ -103,7 +109,7 @@ useEffect(() => {
         {<>{edges.map((edge) => <Edge key={edge.id} id={edge.id} sourceNodeId={edge.sourceNodeId} data={edge.data} targetNodeId={edge.targetNodeId} userVertices={edge.userVertices} style={{ targetMarker: edge.style.targetMarker as MarkerType, labelColor: "#ffffff", thickness: 3, color: [0,0,0,255] ,sourceMarker: edge.style.sourceMarker as MarkerType}} />)}</>}
  
             
-        </>
+        </div>
     );
         
             
