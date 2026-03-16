@@ -8,7 +8,7 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['elkjs/lib/elk.bundled.js'],
-    exclude: ['elkjs'],
+    exclude: ['elkjs/lib/elk.bundled.js'],
+    include: ['elkjs'],
   }
 });
